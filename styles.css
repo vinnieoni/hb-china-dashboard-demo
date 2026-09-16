@@ -1,0 +1,409 @@
+:root {
+  color-scheme: light;
+  --page: #f3f5fa;
+  --surface: #ffffff;
+  --nav-surface: #ffffff;
+  --text-primary: #10131c;
+  --text-secondary: #4b5163;
+  --text-muted: #7d8494;
+  --gridline: #e3e6ee;
+  --baseline: #c4c9d6;
+  --border: rgba(16, 19, 34, 0.08);
+  --shadow: 0 1px 2px rgba(16, 19, 34, 0.04), 0 4px 16px rgba(16, 19, 34, 0.05);
+  --success: #006300;
+
+  --series-1: #2a78d6; /* 위챗 / 문의량 */
+  --series-1-rgb: 42, 120, 214;
+  --series-2: #eb6834; /* 라인 / 예약완료 */
+  --series-2-rgb: 235, 104, 52;
+  --series-3: #1baf7a; /* 미니 */
+  --series-4: #eda100; /* 시술문의 */
+  --series-5: #e87ba4; /* 예약문의 */
+  --series-6: #008300; /* 가격문의 */
+  --series-7: #4a3aa7; /* 변경/취소 */
+  --series-8: #e34948; /* 기타/그외 */
+  --series-muted: #9a998f; /* 미상 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0a0c12;
+    --surface: #14171f;
+    --nav-surface: #1c1f29;
+    --text-primary: #f4f5f8;
+    --text-secondary: #b8bfcc;
+    --text-muted: #7d8494;
+    --gridline: #262b36;
+    --baseline: #3a3f4d;
+    --border: rgba(184, 191, 204, 0.12);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --success: #0ca30c;
+
+    --series-1: #3987e5;
+    --series-1-rgb: 57, 135, 229;
+    --series-2: #d95926;
+    --series-2-rgb: 217, 89, 38;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+    --series-muted: #6f6e66;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0a0c12;
+  --surface: #14171f;
+  --nav-surface: #1c1f29;
+  --text-primary: #f4f5f8;
+  --text-secondary: #b8bfcc;
+  --text-muted: #7d8494;
+  --gridline: #262b36;
+  --baseline: #3a3f4d;
+  --border: rgba(184, 191, 204, 0.12);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --success: #0ca30c;
+
+  --series-1: #3987e5;
+  --series-1-rgb: 57, 135, 229;
+  --series-2: #d95926;
+  --series-2-rgb: 217, 89, 38;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #e66767;
+  --series-muted: #6f6e66;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14.5px;
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--nav-surface);
+  border-bottom: 1px solid var(--gridline);
+  box-shadow: var(--shadow);
+}
+
+.site-nav-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+.demo-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--series-2);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.demo-banner strong {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--series-2);
+}
+
+.demo-banner span {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.demo-banner .demo-banner-en {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+header.app-header {
+  margin-bottom: 20px;
+}
+
+header.app-header h1 {
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+
+header.app-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 18px 0 20px;
+  flex-wrap: wrap;
+}
+
+.filter-row select {
+  font: inherit;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.filter-row label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+
+.stat-tile .label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.stat-tile .value {
+  font-size: 26px;
+  font-weight: 600;
+  font-variant-numeric: proportional-nums;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab-btn {
+  font: inherit;
+  background: none;
+  border: none;
+  padding: 14px 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--series-1);
+  font-weight: 600;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tab-panel .card.full {
+  grid-column: 1 / -1;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.card h2 {
+  font-size: 14.5px;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.card .subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0 0 12px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.legend-swatch.line {
+  width: 14px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.axis-label {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.gridline {
+  stroke: var(--gridline);
+  stroke-width: 1;
+}
+
+.baseline {
+  stroke: var(--baseline);
+  stroke-width: 1;
+}
+
+.value-label {
+  fill: var(--text-secondary);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  display: none;
+  max-width: 220px;
+}
+
+.tooltip .row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.tooltip .key {
+  width: 10px;
+  height: 2px;
+  flex: none;
+}
+
+.tooltip .title {
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.tooltip strong {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+table.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+table.matrix th,
+table.matrix td {
+  padding: 6px 8px;
+  text-align: right;
+  border-bottom: 1px solid var(--gridline);
+}
+
+table.matrix th:first-child,
+table.matrix td:first-child {
+  text-align: left;
+  color: var(--text-secondary);
+}
+
+table.matrix thead th {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 11px;
+}
+
+table.matrix td.cell {
+  font-variant-numeric: tabular-nums;
+  border-radius: 4px;
+}
+
+table.matrix td .rate {
+  display: block;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+footer.app-footer {
+  margin-top: 40px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+@media (max-width: 860px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tab-panel.active {
+    grid-template-columns: 1fr;
+  }
+}

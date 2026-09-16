@@ -1,0 +1,13 @@
+# 원본 데이터 절대 커밋 금지
+*.xlsx
+*.xls
+*.csv
+Dashboard_data/
+
+# 실제 데이터 파이프라인은 이 저장소에 포함하지 않음
+pipeline/
+.github/
+
+.DS_Store
+__pycache__/
+*.pyc

@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>중화권 마케팅 대시보드</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="site-nav-inner">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-booking">예약·전환</button>
+        <button class="tab-btn" data-tab="tab-staff">채널·담당자</button>
+        <button class="tab-btn" data-tab="tab-influencer">인플루언서 퍼널</button>
+        <button class="tab-btn" data-tab="tab-content">콘텐츠 성과</button>
+        <button class="tab-btn" data-tab="tab-megaroi">메가인플루언서 ROI</button>
+        <button class="tab-btn" data-tab="tab-experience">체험단 예약</button>
+        <button class="tab-btn" data-tab="tab-viral">바이럴 포스팅</button>
+        <button class="tab-btn" data-tab="tab-greater-china">중화권 수익 귀인</button>
+      </div>
+    </div>
+  </nav>
+  <div class="app">
+    <div class="demo-banner">
+      <strong>PORTFOLIO DEMO · SYNTHETIC DATA</strong>
+      <span>실제 업무에서 설계한 분석 구조와 데이터 트렌드를 기반으로 포트폴리오용으로 재구성한 데모입니다.
+      표시된 모든 수치는 합성 데이터이며 실제 회사 운영 실적을 나타내지 않습니다.</span>
+      <span class="demo-banner-en">This portfolio demo recreates an analytical framework developed for real-world
+      business use. All displayed values are synthetic and do not represent actual company performance.</span>
+    </div>
+
+    <header class="app-header">
+      <h1>중화권 마케팅 대시보드</h1>
+      <p>마케팅 · 예약 · 내원 · 결제 데이터를 연결해 집계한 분석 데모입니다 (개인 식별 정보 미포함).</p>
+    </header>
+
+    <div class="filter-row">
+      <label for="monthFrom">기간</label>
+      <select id="monthFrom"></select>
+      <span style="color:var(--text-muted)">~</span>
+      <select id="monthTo"></select>
+
+      <label for="channelFilter" style="margin-left:12px">채널</label>
+      <select id="channelFilter"></select>
+    </div>
+
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <section id="tab-booking" class="tab-panel active">
+      <div class="card full" id="trendCard">
+        <h2>일별 문의·예약전환 추이 (주간 합계)</h2>
+        <p class="subtitle">막대 대신 두 라인으로 비교 — 두 값 모두 같은 단위(건수)라 하나의 축을 공유합니다.</p>
+        <div id="trendChart"></div>
+      </div>
+      <div class="card" id="channelVolumeCard">
+        <h2>채널별 문의량</h2>
+        <p class="subtitle">위챗 / 라인 / 미니프로그램</p>
+        <div id="channelVolumeChart"></div>
+      </div>
+      <div class="card" id="channelRateCard">
+        <h2>채널별 예약 전환율</h2>
+        <p class="subtitle">상담유형 = 예약완료 비율</p>
+        <div id="channelRateChart"></div>
+      </div>
+      <div class="card" id="visitTypeCard">
+        <h2>초진 · 재진 비율 추이</h2>
+        <p class="subtitle">월별 구성비 (100% 누적)</p>
+        <div id="visitTypeChart"></div>
+      </div>
+      <div class="card" id="statusCard">
+        <h2>상담유형 분포</h2>
+        <p class="subtitle">상위 6개 + 그 외</p>
+        <div id="statusChart"></div>
+      </div>
+    </section>
+
+    <section id="tab-staff" class="tab-panel">
+      <div class="card full" id="staffMatrixCard">
+        <h2>담당자 × 월 처리 현황</h2>
+        <p class="subtitle">셀 배경 = 처리 건수(진할수록 많음), 하단 작은 숫자 = 예약 전환율</p>
+        <div id="staffMatrix"></div>
+      </div>
+      <div class="card" id="procedureCard">
+        <h2>문의 시술명 Top 10</h2>
+        <p class="subtitle">선택한 기간 기준</p>
+        <div id="procedureChart"></div>
+      </div>
+      <div class="card" id="slotCard">
+        <h2>요일 × 시간대 예약 분포</h2>
+        <p class="subtitle">예약일시 기준 히트맵</p>
+        <div id="slotHeatmap"></div>
+      </div>
+    </section>
+
+    <section id="tab-influencer" class="tab-panel">
+      <div class="card full">
+        <p class="subtitle">인플루언서 시딩 관리시트(5개국/프로그램 시트) 집계 — 소셜 아이디·연락처 등 개인 식별 정보는 포함되지 않습니다.</p>
+        <div class="filter-row" style="margin:0 0 4px">
+          <label for="influencerCountry">국가</label>
+          <select id="influencerCountry"></select>
+        </div>
+      </div>
+      <div class="kpi-row" id="influencerKpiRow" style="grid-column:1 / -1"></div>
+      <div class="card full" id="influencerFunnelCard">
+        <h2>퍼널 단계별 건수</h2>
+        <p class="subtitle">답변없음/거절 → 협의중 → 예약완료 → 방문완료 → 업로드완료</p>
+        <div id="influencerFunnelChart"></div>
+      </div>
+      <div class="card" id="influencerStaffCard">
+        <h2>담당자별 업로드 전환율</h2>
+        <p class="subtitle">업로드완료 ÷ 총 컨택 건수 (선택 국가 기준)</p>
+        <div id="influencerStaffChart"></div>
+      </div>
+      <div class="card" id="influencerTierCard">
+        <h2>팔로워 구간별 업로드 전환율</h2>
+        <p class="subtitle">선택 국가 기준</p>
+        <div id="influencerTierChart"></div>
+      </div>
+    </section>
+
+    <section id="tab-content" class="tab-panel">
+      <div class="card full">
+        <p class="subtitle">콘텐츠 업로드 관리 시트(전체통합) 집계 — 게시물 링크 등 개인 식별 정보는 포함되지 않습니다.</p>
+      </div>
+      <div class="kpi-row" id="contentKpiRow" style="grid-column:1 / -1"></div>
+      <div class="card full" id="contentTrendCard">
+        <h2>월별 업로드 추이</h2>
+        <p class="subtitle">총 업로드 건수 vs 완료(완료+업로드 완료) 건수</p>
+        <div id="contentTrendChart"></div>
+      </div>
+      <div class="card" id="contentCountryCard">
+        <h2>국가별 업로드량</h2>
+        <p class="subtitle">전체 기간 합계</p>
+        <div id="contentCountryChart"></div>
+      </div>
+      <div class="card" id="contentPlatformCard">
+        <h2>플랫폼별 업로드량</h2>
+        <p class="subtitle">전체 기간 합계</p>
+        <div id="contentPlatformChart"></div>
+      </div>
+      <div class="card" id="contentStaffCard">
+        <h2>담당자별 업로드량</h2>
+        <p class="subtitle">전체 기간 합계</p>
+        <div id="contentStaffChart"></div>
+      </div>
+      <div class="card" id="contentTargetCard">
+        <h2>대상(브랜드)별 업로드량</h2>
+        <p class="subtitle">전체 기간 합계</p>
+        <div id="contentTargetChart"></div>
+      </div>
+      <div class="card full" id="contentEngagementCard">
+        <h2>플랫폼별 좋아요/조회수 비율</h2>
+        <p class="subtitle" id="contentEngagementSubtitle">좋아요·조회수가 모두 기록된 게시물만 대상 — 참고용 부분 표본입니다.</p>
+        <div id="contentEngagementChart"></div>
+      </div>
+    </section>
+
+    <section id="tab-megaroi" class="tab-panel">
+      <div class="card full">
+        <p class="subtitle">마케팅팀 인플루언서 시트의 '메가인플루언서 협업ROI' 집계 — 아이디·계정 링크 등 개인 식별 정보는 포함되지 않습니다.</p>
+      </div>
+      <div class="kpi-row" id="megaRoiKpiRow" style="grid-column:1 / -1"></div>
+      <div class="card" id="megaRoiStaffCard">
+        <h2>담당자별 평균 ROI달성률</h2>
+        <p class="subtitle">ROI달성률이 집계된 건 기준 (3건 미만 담당자 제외)</p>
+        <div id="megaRoiStaffChart"></div>
+      </div>
+      <div class="card" id="megaRoiPlatformCard">
+        <h2>플랫폼별 평균 ROI달성률</h2>
+        <p class="subtitle">ROI달성률이 집계된 건 기준</p>
+        <div id="megaRoiPlatformChart"></div>
+      </div>
+      <div class="card full" id="megaRoiTierCard">
+        <h2>팔로워 구간별 평균 CPV(예측)</h2>
+        <p class="subtitle">CPV가 집계된 건 기준, 팔로워 수 오름차순</p>
+        <div id="megaRoiTierChart"></div>
+      </div>
+    </section>
+
+    <section id="tab-experience" class="tab-panel">
+      <div class="card full">
+        <p class="subtitle">체험단 정리 시트(중국/대만/일본/영미) 집계 — 성함·생년월일·연락처 등 개인 식별 정보는 포함되지 않습니다. 방문/예약 상태는 비고란에 명시적으로 표시된 건만 집계되어 "미표시" 비중이 큽니다.</p>
+      </div>
+      <div class="kpi-row" id="experienceKpiRow" style="grid-column:1 / -1"></div>
+      <div class="card full" id="experienceTrendCard">
+        <h2>월별 예약 추이</h2>
+        <p class="subtitle">전체 국가 합계</p>
+        <div id="experienceTrendChart"></div>
+      </div>
+      <div class="card" id="experienceCountryCard">
+        <h2>국가별 예약 건수</h2>
+        <p class="subtitle">상위 8개국 + 그 외</p>
+        <div id="experienceCountryChart"></div>
+      </div>
+      <div class="card" id="experienceStatusCard">
+        <h2>방문·예약 상태 표시 분포</h2>
+        <p class="subtitle">비고란에 명시적으로 표시된 건만 (미표시 다수)</p>
+        <div id="experienceStatusChart"></div>
+      </div>
+      <div class="card full" id="experienceSlotCard">
+        <h2>요일 × 시간대 예약 분포</h2>
+        <p class="subtitle">예약일시 기준 히트맵</p>
+        <div id="experienceSlotHeatmap"></div>
+      </div>
+    </section>
+
+    <section id="tab-viral" class="tab-panel">
+      <div class="card full">
+        <p class="subtitle">바이럴 포스팅 막계정 시트(샤오홍슈/스레드) 집계 — 포스팅 링크 등 개인 식별 정보는 포함되지 않습니다.</p>
+      </div>
+      <div class="kpi-row" id="viralKpiRow" style="grid-column:1 / -1"></div>
+      <div class="card full" id="viralTrendCard">
+        <h2>월별 포스팅 추이</h2>
+        <p class="subtitle">플랫폼별 업로드 건수</p>
+        <div id="viralTrendChart"></div>
+      </div>
+      <div class="card" id="viralPlatformCard">
+        <h2>플랫폼별 포스팅량</h2>
+        <p class="subtitle">전체 기간 합계</p>
+        <div id="viralPlatformChart"></div>
+      </div>
+      <div class="card" id="viralDeletedCard">
+        <h2>플랫폼별 삭제된 게시물 수</h2>
+        <p class="subtitle">비고란에 '삭제'로 명시적으로 표시된 건만</p>
+        <div id="viralDeletedChart"></div>
+      </div>
+      <div class="card full" id="viralEngagementCard">
+        <h2>참여 지표 (평균)</h2>
+        <p class="subtitle" id="viralEngagementSubtitle">참여(좋아요/댓글/조회수)가 기록된 게시물만 대상 — 전수 조사가 아닌 참고용 수치입니다.</p>
+        <div class="kpi-row" id="viralEngagementRow"></div>
+      </div>
+    </section>
+
+    <section id="tab-greater-china" class="tab-panel">
+      <div class="card full">
+        <h2>중화권 수익 귀인</h2>
+        <p class="subtitle">내원 고객의 실제 결제 전환율 및 채널별 수익 기여도</p>
+        <div class="info-box">
+          <strong>데이터 범위:</strong> 2026-06-01 ~ 2026-09-14 |
+          <strong>귀인 윈도우:</strong> 내원 후 30일 |
+          <strong>성숙 코호트:</strong> 내원일 ≤ 2026-08-15
+          <p style="font-size:0.85em;margin-top:6px;color:var(--text-muted)">최근 30일 내원 고객은 30일 관찰 기간이 미완료되어 최종 전환율 KPI에서 제외됩니다.</p>
+        </div>
+      </div>
+
+      <div class="kpi-row" id="greaterChinaKpiRow" style="grid-column:1 / -1"></div>
+
+      <div class="card full" id="greaterChinaFunnelCard">
+        <h2>수익 귀인 흐름</h2>
+        <p class="subtitle">성숙 코호트: 내원 고객 → 결제 고객 → 실제 수익</p>
+        <div id="greaterChinaFunnelChart"></div>
+      </div>
+
+      <div class="card full" id="greaterChinaRevenueReconciliationCard">
+        <h2>수익 귀인 품질</h2>
+        <p class="subtitle">중화권 전체 승인 매출에서 귀인 가능한 비율</p>
+        <div id="greaterChinaRevenueReconciliationChart"></div>
+      </div>
+
+      <div class="card full" id="greaterChinaNationalityCard">
+        <h2>국가/지역별 성과 (성숙 코호트)</h2>
+        <p class="subtitle">예약상태 = 귀가 또는 내원인 고객 기준</p>
+        <div id="greaterChinaNationalityTable"></div>
+      </div>
+
+      <div class="card full" id="greaterChinaChannelCard">
+        <h2>채널별 수익 기여도</h2>
+        <p class="subtitle">최초 유입 채널 기준 (성숙 코호트)</p>
+        <div id="greaterChinaChannelChart"></div>
+        <div id="greaterChinaChannelTable" style="margin-top:20px"></div>
+      </div>
+
+      <div class="card full" id="greaterChinaOpenCohortCard">
+        <h2>진행 중인 코호트</h2>
+        <p class="subtitle">2026-08-16 ~ 2026-09-14 내원 고객</p>
+        <div id="greaterChinaOpenCohortInfo"></div>
+      </div>
+
+      <div class="card full" id="greaterChinaMethodologyCard">
+        <h2>귀인 방법론</h2>
+        <div id="greaterChinaMethodology" style="font-size:0.9em;line-height:1.6"></div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+<strong>PORTFOLIO DEMO · SYNTHETIC DATA</strong> — 모든 수치는 합성 데이터입니다.<br/>
+<span style="font-size:0.9em">Marketing Data → Reservation / Visit Data → Payment Data → 30-Day Attribution Engine → Revenue Measurement<br/>
+실제 운영 데이터·원본 파일·개인 식별 정보는 이 저장소에 포함되지 않습니다.</span>
+    </footer>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
