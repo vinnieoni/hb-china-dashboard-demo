@@ -1139,3 +1139,397 @@ footer.app-footer {
   .exec-stage { padding: 18px 0 0; }
   .exec-link { padding: 16px 0; }
 }
+
+/* ============================================================================
+   MASTER DESIGN SYSTEM
+   Promotes the Revenue Attribution visual language to the whole dashboard.
+   Presentation only — no data, chart config, filter or tab logic is touched.
+   ============================================================================ */
+
+/* ---- tokens: the exec palette becomes global; chart tokens re-themed to
+        the same neutral gray hierarchy ---- */
+:root {
+  --ex-ink: #0d1117;
+  --ex-body: #3d4451;
+  --ex-mute: #767f8e;
+  --ex-rule: #e2e5ea;
+  --ex-hair: #eef0f3;
+  --ex-accent: #1b4fd8;
+  --ex-flat: #c9cfd8;
+
+  --page: #f6f7f9;
+  --surface: #ffffff;
+  --nav-surface: #ffffff;
+  --text-primary: #0d1117;
+  --text-secondary: #3d4451;
+  --text-muted: #767f8e;
+  --gridline: #eef0f3;
+  --baseline: #d6dae1;
+  --border: #e2e5ea;
+  --shadow: none;
+  --series-1: #1b4fd8;
+  --series-1-rgb: 27, 79, 216;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --ex-ink: #f2f4f8;
+    --ex-body: #c2c8d2;
+    --ex-mute: #8b93a1;
+    --ex-rule: #2b3140;
+    --ex-hair: #21262f;
+    --ex-accent: #6b95ff;
+    --ex-flat: #3a4151;
+
+    --page: #0b0d12;
+    --surface: #12151c;
+    --nav-surface: #12151c;
+    --text-primary: #f2f4f8;
+    --text-secondary: #c2c8d2;
+    --text-muted: #8b93a1;
+    --gridline: #21262f;
+    --baseline: #39404f;
+    --border: #2b3140;
+    --shadow: none;
+    --series-1: #6b95ff;
+    --series-1-rgb: 107, 149, 255;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ex-ink: #f2f4f8;
+  --ex-body: #c2c8d2;
+  --ex-mute: #8b93a1;
+  --ex-rule: #2b3140;
+  --ex-hair: #21262f;
+  --ex-accent: #6b95ff;
+  --ex-flat: #3a4151;
+
+  --page: #0b0d12;
+  --surface: #12151c;
+  --nav-surface: #12151c;
+  --text-primary: #f2f4f8;
+  --text-secondary: #c2c8d2;
+  --text-muted: #8b93a1;
+  --gridline: #21262f;
+  --baseline: #39404f;
+  --border: #2b3140;
+  --shadow: none;
+  --series-1: #6b95ff;
+  --series-1-rgb: 107, 149, 255;
+}
+
+/* ---- shell ---- */
+body {
+  color: var(--ex-body);
+}
+
+.site-nav {
+  box-shadow: none;
+  border-bottom: 1px solid var(--ex-rule);
+}
+
+.tab-btn {
+  padding: 15px 13px;
+  font-size: 13.5px;
+  letter-spacing: -0.004em;
+  color: var(--ex-mute);
+}
+
+.tab-btn:hover {
+  color: var(--ex-ink);
+}
+
+.tab-btn.active {
+  color: var(--ex-ink);
+  border-bottom-color: var(--ex-accent);
+  font-weight: 650;
+}
+
+header.app-header {
+  margin-bottom: 4px;
+}
+
+header.app-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ex-ink);
+  margin-bottom: 6px;
+}
+
+header.app-header p {
+  font-size: 12.5px;
+  color: var(--ex-mute);
+}
+
+/* ---- synthetic-data disclosure: flattened chrome, unchanged prominence ---- */
+.demo-banner {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--ex-rule);
+  border-left: 3px solid var(--series-2);
+  padding: 16px 18px;
+  margin-bottom: 24px;
+}
+
+/* ---- filter toolbar: compact, subordinate to content ---- */
+.filter-row {
+  gap: 8px;
+  margin: 18px 0 26px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ex-rule);
+}
+
+.filter-row label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ex-mute);
+}
+
+.filter-row select {
+  font-size: 12.5px;
+  padding: 5px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--ex-rule);
+  background: var(--surface);
+  color: var(--ex-ink);
+}
+
+/* ---- KPI band: same family as the Revenue Attribution hero ---- */
+.kpi-row {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 30px;
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--ex-rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0 30px;
+}
+
+.stat-tile:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.stat-tile .value {
+  order: 1;
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ex-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-tile .label {
+  order: 2;
+  margin: 12px 0 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ex-mute);
+}
+
+/* ---- chart containers: hairline surfaces, no SaaS card ---- */
+.tab-panel.active {
+  gap: 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--ex-hair);
+  border-radius: 0;
+  padding: 26px 28px;
+  box-shadow: none;
+}
+
+.card h2 {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--ex-ink);
+  margin: 0 0 5px;
+}
+
+.card .subtitle {
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ex-mute);
+  margin: 0 0 22px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--ex-rule);
+}
+
+.card h2 + .subtitle {
+  letter-spacing: 0.01em;
+}
+
+/* a card that is only a note: restrained info line, no heading rule */
+.card > .subtitle:first-child:last-child {
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.card:has(> .subtitle:first-child:last-child) {
+  background: transparent;
+  border: 0;
+  border-left: 2px solid var(--ex-rule);
+  padding: 2px 0 2px 16px;
+}
+
+/* ---- chart chrome ---- */
+.axis-label {
+  fill: var(--ex-mute);
+  font-size: 10px;
+}
+
+.value-label {
+  fill: var(--ex-mute);
+}
+
+.legend {
+  font-size: 11.5px;
+  color: var(--ex-mute);
+  gap: 14px;
+}
+
+.legend-swatch {
+  border-radius: 0;
+}
+
+table.matrix {
+  font-size: 12px;
+}
+
+table.matrix th,
+table.matrix td {
+  border-bottom: 1px solid var(--ex-hair);
+  padding: 8px;
+}
+
+table.matrix th {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ex-mute);
+}
+
+.tooltip {
+  border-radius: 2px;
+  border: 1px solid var(--ex-rule);
+  box-shadow: 0 2px 10px rgba(13, 17, 23, 0.1);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 860px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 26px;
+  }
+  .stat-tile:nth-child(odd) {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .stat-tile {
+    padding: 0 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 22px 18px;
+  }
+  .stat-tile .value {
+    font-size: 30px;
+  }
+  .filter-row {
+    margin: 14px 0 20px;
+  }
+  header.app-header h1 {
+    font-size: 19px;
+  }
+}
+
+/* Grid items default to min-width:auto, so a wide matrix table stretches its
+   column and pushes the page. Contain it: the table scrolls inside its own
+   card instead of widening the layout. */
+.tab-panel.active > * {
+  min-width: 0;
+}
+
+.card {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  table.matrix th,
+  table.matrix td {
+    padding: 6px 5px;
+    font-size: 11px;
+  }
+}
+
+/* The hero labels on the Revenue Attribution tab are English, where wide
+   tracking reads as editorial. The other tabs label in Korean, where the same
+   tracking just looks loose — tighten it there. */
+.stat-tile .label {
+  letter-spacing: 0.05em;
+  font-size: 11px;
+}
+
+table.matrix th {
+  letter-spacing: 0.04em;
+}
+
+/* The shared period/channel filter feeds only the booking and staff renders,
+   and #kpiRow holds booking metrics. The five tabs below carry their own KPI
+   band and ignore the filter, so showing either there is stale chrome —
+   doubly visible now that both use the same editorial treatment.
+   Presentation only: render functions and filter state are untouched. */
+.app:has(#tab-influencer.active) > .filter-row,
+.app:has(#tab-content.active) > .filter-row,
+.app:has(#tab-megaroi.active) > .filter-row,
+.app:has(#tab-experience.active) > .filter-row,
+.app:has(#tab-viral.active) > .filter-row,
+.app:has(#tab-influencer.active) > #kpiRow,
+.app:has(#tab-content.active) > #kpiRow,
+.app:has(#tab-megaroi.active) > #kpiRow,
+.app:has(#tab-experience.active) > #kpiRow,
+.app:has(#tab-viral.active) > #kpiRow {
+  display: none;
+}
+
+/* Without the filter rule above them, these tabs need the header separation */
+.app:has(#tab-influencer.active) > .tab-panel,
+.app:has(#tab-content.active) > .tab-panel,
+.app:has(#tab-megaroi.active) > .tab-panel,
+.app:has(#tab-experience.active) > .tab-panel,
+.app:has(#tab-viral.active) > .tab-panel {
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid var(--ex-rule);
+}
+
+/* Chart SVGs carry width:100% with a fixed height attribute, so on a narrow
+   card the viewBox scales down but the element keeps its full height and
+   leaves a large empty band. Let the box follow the drawing instead.
+   Presentation only — the viewBox and chart config are untouched. */
+@media (max-width: 860px) {
+  .card svg {
+    height: auto;
+  }
+}
