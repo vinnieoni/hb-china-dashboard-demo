@@ -233,54 +233,48 @@
     </section>
 
     <section id="tab-greater-china" class="tab-panel">
-      <div class="card full">
-        <h2>중화권 수익 귀인</h2>
-        <p class="subtitle">내원 고객의 실제 결제 전환율 및 채널별 수익 기여도</p>
-        <div class="info-box">
-          <strong>데이터 범위:</strong> 2026-06-01 ~ 2026-09-14 |
-          <strong>귀인 윈도우:</strong> 내원 후 30일 |
-          <strong>성숙 코호트:</strong> 내원일 ≤ 2026-08-15
-          <p style="font-size:0.85em;margin-top:6px;color:var(--text-muted)">최근 30일 내원 고객은 30일 관찰 기간이 미완료되어 최종 전환율 KPI에서 제외됩니다.</p>
+      <header class="exec-hero">
+        <div class="exec-hero-top">
+          <div class="exec-hero-lede">
+            <p class="exec-eyebrow">Greater China</p>
+            <h2 class="exec-title">Revenue Attribution</h2>
+            <p class="exec-chain">Marketing <i>→</i> Visit <i>→</i> Payment <i>→</i> Revenue</p>
+          </div>
+          <div class="exec-hero-aside">
+            <p class="exec-meta">30-Day Window <i>·</i> Mature Cohort <i>·</i> PII-Safe Design</p>
+          </div>
         </div>
-      </div>
+        <div class="exec-headline" id="execHeadline"></div>
+      </header>
 
-      <div class="kpi-row" id="greaterChinaKpiRow" style="grid-column:1 / -1"></div>
+      <section class="exec-block">
+        <div class="exec-head"><span class="exec-num">01</span><h3>Conversion Funnel</h3></div>
+        <div class="exec-funnel" id="execFunnel"></div>
+      </section>
 
-      <div class="card full" id="greaterChinaFunnelCard">
-        <h2>수익 귀인 흐름</h2>
-        <p class="subtitle">성숙 코호트: 내원 고객 → 결제 고객 → 실제 수익</p>
-        <div id="greaterChinaFunnelChart"></div>
-      </div>
+      <section class="exec-block">
+        <div class="exec-head"><span class="exec-num">02</span><h3>Where Revenue Comes From</h3></div>
+        <div class="exec-split">
+          <div>
+            <h4 class="exec-sub">Revenue by Market</h4>
+            <div id="execMarket"></div>
+          </div>
+          <div>
+            <h4 class="exec-sub">Revenue by Acquisition Channel</h4>
+            <div id="execChannel"></div>
+          </div>
+        </div>
+      </section>
 
-      <div class="card full" id="greaterChinaRevenueReconciliationCard">
-        <h2>수익 귀인 품질</h2>
-        <p class="subtitle">중화권 전체 승인 매출에서 귀인 가능한 비율</p>
-        <div id="greaterChinaRevenueReconciliationChart"></div>
-      </div>
+      <section class="exec-block">
+        <div class="exec-head"><span class="exec-num">03</span><h3>Attribution Quality</h3></div>
+        <div class="exec-quality" id="execQuality"></div>
+      </section>
 
-      <div class="card full" id="greaterChinaNationalityCard">
-        <h2>국가/지역별 성과 (성숙 코호트)</h2>
-        <p class="subtitle">예약상태 = 귀가 또는 내원인 고객 기준</p>
-        <div id="greaterChinaNationalityTable"></div>
-      </div>
-
-      <div class="card full" id="greaterChinaChannelCard">
-        <h2>채널별 수익 기여도</h2>
-        <p class="subtitle">최초 유입 채널 기준 (성숙 코호트)</p>
-        <div id="greaterChinaChannelChart"></div>
-        <div id="greaterChinaChannelTable" style="margin-top:20px"></div>
-      </div>
-
-      <div class="card full" id="greaterChinaOpenCohortCard">
-        <h2>진행 중인 코호트</h2>
-        <p class="subtitle">2026-08-16 ~ 2026-09-14 내원 고객</p>
-        <div id="greaterChinaOpenCohortInfo"></div>
-      </div>
-
-      <div class="card full" id="greaterChinaMethodologyCard">
-        <h2>귀인 방법론</h2>
-        <div id="greaterChinaMethodology" style="font-size:0.9em;line-height:1.6"></div>
-      </div>
+      <section class="exec-block exec-block-last">
+        <div class="exec-head"><span class="exec-num">04</span><h3>Methodology</h3></div>
+        <div class="exec-method" id="execMethod"></div>
+      </section>
     </section>
 
     <footer class="app-footer">

@@ -859,378 +859,195 @@ main().catch((err) => {
 });
 
   // ---- Greater China Revenue Attribution ----
+  // ===========================================================
+  // Greater China — Executive Analytics view
+  // Presentation only: every figure is read straight from
+  // dashboardData.greaterChinaRevenue, nothing is recomputed.
+  // ===========================================================
+  const execKRW = (v) => {
+    if (v >= 1e9) return "₩" + (v / 1e9).toFixed(2) + "B";
+    if (v >= 1e6) return "₩" + (v / 1e6).toFixed(2) + "M";
+    return "₩" + Math.round(v).toLocaleString();
+  };
+  const execPct = (v) => (v * 100).toFixed(1) + "%";
+  const execNum = (v) => v.toLocaleString();
+
   function renderGreaterChina() {
+    const headline = document.getElementById("execHeadline");
     if (!dashboardData || !dashboardData.greaterChinaRevenue) {
-      clear(document.getElementById("greaterChinaKpiRow"));
-      document.getElementById("greaterChinaFunnelChart").innerHTML = "<p>데이터 없음</p>";
+      if (headline) headline.innerHTML = "<p>데이터 없음</p>";
       return;
     }
-
     const gc = dashboardData.greaterChinaRevenue;
-    const formatKRW = (val) => {
-      if (val >= 1e9) return "₩" + (val / 1e9).toFixed(2) + "B";
-      if (val >= 1e6) return "₩" + (val / 1e6).toFixed(2) + "M";
-      return "₩" + val.toLocaleString();
-    };
-
-    // KPI Cards
-    const kpiData = [
-      { label: "성숙 방문 고객수", value: gc.matureVisitCustomers, format: (v) => v.toLocaleString() },
-      { label: "결제 고객", value: gc.paidCustomers, format: (v) => v.toLocaleString() },
-      { label: "내원 → 결제", value: gc.visitToPaidConversion, format: (v) => (v * 100).toFixed(1) + "%" },
-      { label: "귀인 수익", value: gc.attributedRevenue, format: formatKRW },
-      { label: "고객당 수익", value: gc.revenuePerPaidCustomer, format: formatKRW },
-      { label: "결제 귀인 성공률", value: gc.attributionCoverage, format: (v) => (v * 100).toFixed(1) + "%" },
-    ];
-
-    const kpiRow = document.getElementById("greaterChinaKpiRow");
-    clear(kpiRow);
-    kpiData.forEach((kpi) => {
-      const card = document.createElement("div");
-      card.className = "kpi-card";
-      card.innerHTML = `<div class="kpi-label">${kpi.label}</div><div class="kpi-value">${kpi.format(kpi.value)}</div>`;
-      kpiRow.appendChild(card);
-    });
-
-    // Funnel chart
-    renderGreaterChinaFunnel();
-
-    // Revenue Reconciliation
-    renderGreaterChinaReconciliation();
-
-    // Nationality table
-    renderGreaterChinaNationality();
-
-    // Channel revenue
-    renderGreaterChinaChannel();
-
-    // Open cohort info
-    renderGreaterChinaOpenCohort();
-
-    // Methodology
-    renderGreaterChinaMethodology();
+    execRenderHeadline(gc);
+    execRenderFunnel(gc);
+    execRenderComposition(gc);
+    execRenderQuality(gc);
+    execRenderMethod();
   }
 
-  function renderGreaterChinaFunnel() {
-    if (!dashboardData || !dashboardData.greaterChinaRevenue) return;
-    const gc = dashboardData.greaterChinaRevenue;
-    const container = document.getElementById("greaterChinaFunnelChart");
-    clear(container);
-
-    const formatKRW = (val) => {
-      if (val >= 1e9) return (val / 1e9).toFixed(2) + "B";
-      if (val >= 1e6) return (val / 1e6).toFixed(2) + "M";
-      return val.toLocaleString();
-    };
-
-    const width = 600;
-    const svg = svgEl("svg", { viewBox: `0 0 ${width} 180`, width: "100%", height: "180px" });
-
-    const steps = [
-      { label: "성숙 방문 고객", value: gc.matureVisitCustomers, x: 50 },
-      { label: "결제 고객", value: gc.paidCustomers, x: 300 },
-      { label: "귀인 수익", value: `₩${formatKRW(gc.attributedRevenue)}`, x: 550 },
-    ];
-
-    steps.forEach((step, i) => {
-      // Box
-      const boxW = 80, boxH = 60;
-      const rect = svgEl("rect", {
-        x: step.x - boxW / 2,
-        y: 20,
-        width: boxW,
-        height: boxH,
-        fill: "var(--series-" + ((i % 7) + 1) + ")",
-        rx: "4",
-        opacity: "0.2",
-        stroke: "var(--series-" + ((i % 7) + 1) + ")",
-        "stroke-width": "2",
-      });
-      svg.appendChild(rect);
-
-      // Label
-      const label = svgEl("text", {
-        x: step.x,
-        y: 25,
-        "text-anchor": "middle",
-        "font-size": "12",
-        fill: "var(--text-muted)",
-      });
-      label.textContent = step.label;
-      svg.appendChild(label);
-
-      // Value
-      const value = svgEl("text", {
-        x: step.x,
-        y: 65,
-        "text-anchor": "middle",
-        "font-size": "18",
-        fill: "var(--text)",
-        "font-weight": "600",
-      });
-      value.textContent = typeof step.value === "number" ? step.value.toLocaleString() : step.value;
-      svg.appendChild(value);
-
-      // Arrow
-      if (i < steps.length - 1) {
-        const nextX = steps[i + 1].x;
-        const line = svgEl("line", {
-          x1: step.x + 50,
-          y1: 50,
-          x2: nextX - 50,
-          y2: 50,
-          stroke: "var(--text-muted)",
-          "stroke-width": "2",
-          "marker-end": "url(#arrowhead)",
-        });
-        svg.appendChild(line);
-      }
-    });
-
-    // Arrow marker
-    const defs = svgEl("defs", {});
-    const marker = svgEl("marker", {
-      id: "arrowhead",
-      markerWidth: "10",
-      markerHeight: "10",
-      refX: "9",
-      refY: "3",
-      orient: "auto",
-    });
-    const polygon = svgEl("polygon", { points: "0 0, 10 3, 0 6", fill: "var(--text-muted)" });
-    marker.appendChild(polygon);
-    defs.appendChild(marker);
-    svg.appendChild(defs);
-
-    // Conversion rate annotation
-    const conv = svgEl("text", {
-      x: 175,
-      y: 120,
-      "text-anchor": "middle",
-      "font-size": "14",
-      fill: "var(--series-3)",
-      "font-weight": "600",
-    });
-    conv.textContent = (gc.visitToPaidConversion * 100).toFixed(1) + "%";
-    svg.appendChild(conv);
-
-    container.appendChild(svg);
-  }
-
-  function renderGreaterChinaReconciliation() {
-    if (!dashboardData || !dashboardData.greaterChinaRevenue) return;
-    const gc = dashboardData.greaterChinaRevenue;
-    const recon = gc._reconciliation || {};
-    const container = document.getElementById("greaterChinaRevenueReconciliationChart");
-    clear(container);
-
-    const total = recon.totalApprovedRevenue || 0;
-    const mature = recon.matureAttributedRevenue || 0;
-    const open = recon.openAttributedRevenue || 0;
-    const unattr = recon.unattributedRevenue || 0;
-
-    const formatKRW = (val) => {
-      if (val >= 1e9) return (val / 1e9).toFixed(1) + "B";
-      if (val >= 1e6) return (val / 1e6).toFixed(1) + "M";
-      return val.toLocaleString();
-    };
-
-    const width = 600, height = 100;
-    const svg = svgEl("svg", { viewBox: `0 0 ${width} ${height}`, width: "100%", height: height + "px" });
-
-    // Stacked bar
-    const barY = 30, barH = 40;
-    const matureW = (mature / total) * 400;
-    const openW = (open / total) * 400;
-    const unattW = (unattr / total) * 400;
-
-    // Mature
-    const mBar = svgEl("rect", {
-      x: 80,
-      y: barY,
-      width: matureW,
-      height: barH,
-      fill: "var(--series-1)",
-    });
-    svg.appendChild(mBar);
-
-    // Open
-    const oBar = svgEl("rect", {
-      x: 80 + matureW,
-      y: barY,
-      width: openW,
-      height: barH,
-      fill: "var(--series-2)",
-    });
-    svg.appendChild(oBar);
-
-    // Unattributed
-    const uBar = svgEl("rect", {
-      x: 80 + matureW + openW,
-      y: barY,
-      width: unattW,
-      height: barH,
-      fill: "var(--series-8)",
-    });
-    svg.appendChild(uBar);
-
-    // Labels
-    const labelY = barY + barH + 20;
+  function execRenderHeadline(gc) {
+    const el = document.getElementById("execHeadline");
+    clear(el);
     [
-      { label: `성숙\n${formatKRW(mature)}\n(${(mature / total * 100).toFixed(1)}%)`, x: 80 + matureW / 2 },
-      { label: `진행 중\n${formatKRW(open)}\n(${(open / total * 100).toFixed(1)}%)`, x: 80 + matureW + openW / 2 },
-      { label: `귀인 불가\n${formatKRW(unattr)}\n(${(unattr / total * 100).toFixed(1)}%)`, x: 80 + matureW + openW + unattW / 2 },
-    ].forEach((item) => {
-      const text = svgEl("text", {
-        x: item.x,
-        y: labelY,
-        "text-anchor": "middle",
-        "font-size": "11",
-        fill: "var(--text-muted)",
-      });
-      text.textContent = item.label;
-      svg.appendChild(text);
+      { v: execNum(gc.matureVisitCustomers), k: "Mature Visit Customers" },
+      { v: execPct(gc.visitToPaidConversion), k: "Visit → Paid" },
+      { v: execKRW(gc.attributedRevenue), k: "Attributed Revenue", lead: true },
+    ].forEach((m) => {
+      const d = document.createElement("div");
+      d.className = "exec-hk" + (m.lead ? " exec-hk-lead" : "");
+      d.innerHTML =
+        '<div class="exec-hk-value">' + m.v + "</div>" +
+        '<div class="exec-hk-label">' + m.k + "</div>";
+      el.appendChild(d);
     });
-
-    container.appendChild(svg);
   }
 
-  function renderGreaterChinaNationality() {
-    if (!dashboardData || !dashboardData.greaterChinaRevenue) return;
-    const natData = dashboardData.greaterChinaRevenue.nationalityRevenue || [];
-    const container = document.getElementById("greaterChinaNationalityTable");
-    clear(container);
+  function execRenderFunnel(gc) {
+    const el = document.getElementById("execFunnel");
+    clear(el);
 
-    const formatKRW = (val) => {
-      if (val >= 1e9) return "₩" + (val / 1e9).toFixed(2) + "B";
-      if (val >= 1e6) return "₩" + (val / 1e6).toFixed(2) + "M";
-      return "₩" + val.toLocaleString();
-    };
+    const stage = (k, v, note, rev) =>
+      '<div class="exec-stage' + (rev ? " exec-stage-rev" : "") + '">' +
+        '<div class="exec-stage-k">' + k + "</div>" +
+        '<div class="exec-stage-v">' + v + "</div>" +
+        (note ? '<div class="exec-stage-n">' + note + "</div>" : "") +
+      "</div>";
 
-    const table = document.createElement("table");
-    table.className = "data-table";
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>국가/지역</th>
-          <th>방문 이벤트</th>
-          <th>결제</th>
-          <th>전환율</th>
-          <th>수익</th>
-          <th>고객당</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${natData.map((n) => `
-          <tr>
-            <td>${n.country}</td>
-            <td>${n.visits.toLocaleString()}</td>
-            <td>${n.paidCustomers.toLocaleString()}</td>
-            <td>${(n.visitToPaidConversion * 100).toFixed(1)}%</td>
-            <td>${formatKRW(n.revenue)}</td>
-            <td>${formatKRW(n.revenuePerPaidCustomer)}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    `;
-    container.appendChild(table);
+    const link = (rate, k) =>
+      '<div class="exec-link">' +
+        '<div class="exec-link-rate">' + rate + "</div>" +
+        '<div class="exec-arrow"></div>' +
+        '<div class="exec-link-k">' + k + "</div>" +
+      "</div>";
 
-    const note = document.createElement("p");
-    note.style.fontSize = "0.85em";
-    note.style.color = "var(--text-muted)";
-    note.style.marginTop = "12px";
-    note.textContent = "동일 고객의 복수 방문은 각각의 방문 이벤트로 집계됩니다.";
-    container.appendChild(note);
+    el.innerHTML =
+      stage("Mature Visit Customers", execNum(gc.matureVisitCustomers),
+            execNum(gc.matureVisitEvents) + " visit events") +
+      link(execPct(gc.visitToPaidConversion), "Visit → Paid") +
+      stage("Paid Customers", execNum(gc.paidCustomers),
+            execNum(gc.attributedPayments) + " attributed payments") +
+      link(execKRW(gc.revenuePerPaidCustomer), "Revenue / Paid Customer") +
+      stage("Attributed Revenue", execKRW(gc.attributedRevenue),
+            "30-day mature cohort", true);
   }
 
-  function renderGreaterChinaChannel() {
-    if (!dashboardData || !dashboardData.greaterChinaRevenue) return;
-    const chData = (dashboardData.greaterChinaRevenue.channelRevenue || []).slice(0, 8);
-    const container = document.getElementById("greaterChinaChannelTable");
-    clear(container);
-
-    const formatKRW = (val) => {
-      if (val >= 1e9) return "₩" + (val / 1e9).toFixed(2) + "B";
-      if (val >= 1e6) return "₩" + (val / 1e6).toFixed(2) + "M";
-      return "₩" + val.toLocaleString();
-    };
-
-    const table = document.createElement("table");
-    table.className = "data-table";
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>채널</th>
-          <th>방문 이벤트</th>
-          <th>결제</th>
-          <th>전환율</th>
-          <th>수익</th>
-          <th>고객당</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${chData.map((c) => `
-          <tr>
-            <td>${c.channel}</td>
-            <td>${c.visits.toLocaleString()}</td>
-            <td>${c.paidCustomers.toLocaleString()}</td>
-            <td>${c.visits ? ((c.paidCustomers / c.visits) * 100).toFixed(1) : "0"}%</td>
-            <td>${formatKRW(c.revenue)}</td>
-            <td>${c.paidCustomers ? formatKRW(c.revenue / c.paidCustomers) : "₩0"}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    `;
-    container.appendChild(table);
-
-    const note = document.createElement("p");
-    note.style.fontSize = "0.85em";
-    note.style.color = "var(--text-muted)";
-    note.style.marginTop = "12px";
-    note.textContent = "동일 고객의 복수 방문은 각각의 방문 이벤트로 집계됩니다.";
-    container.appendChild(note);
+  function execRanked(el, rows, total) {
+    clear(el);
+    const wrap = document.createElement("div");
+    wrap.className = "exec-rank";
+    const max = Math.max.apply(null, rows.map((r) => r.revenue));
+    rows.forEach((r, i) => {
+      const row = document.createElement("div");
+      if (i === 0) row.className = "exec-rank-lead";
+      row.innerHTML =
+        '<div class="exec-row-top">' +
+          '<span class="exec-row-name">' + r.name + "</span>" +
+          '<span class="exec-row-fig">' +
+            '<span class="exec-row-val">' + execKRW(r.revenue) + "</span>" +
+            '<span class="exec-row-share">' + (r.revenue / total * 100).toFixed(1) + "%</span>" +
+          "</span>" +
+        "</div>" +
+        '<div class="exec-track"><div class="exec-fill" style="width:' +
+          (r.revenue / max * 100).toFixed(2) + '%"></div></div>' +
+        '<div class="exec-row-meta">' + execNum(r.paidCustomers) +
+          " paid · " + execKRW(r.revenue / r.paidCustomers) + " per customer</div>";
+      wrap.appendChild(row);
+    });
+    el.appendChild(wrap);
   }
 
-  function renderGreaterChinaOpenCohort() {
-    if (!dashboardData || !dashboardData.greaterChinaRevenue) return;
-    const gc = dashboardData.greaterChinaRevenue;
-    const container = document.getElementById("greaterChinaOpenCohortInfo");
-    clear(container);
-
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <div style="display:flex;gap:20px;flex-wrap:wrap">
-        <div>
-          <div style="font-size:12px;color:var(--text-muted)">진행 중인 고객수</div>
-          <div style="font-size:24px;font-weight:600;color:var(--series-2)">${gc.openVisitCustomers.toLocaleString()}</div>
-        </div>
-        <div>
-          <div style="font-size:12px;color:var(--text-muted)">현재까지 결제 고객</div>
-          <div style="font-size:24px;font-weight:600;color:var(--series-3)">${gc.openPaidCustomers.toLocaleString()}</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:6px">잠정치 · 30일 관찰 진행 중</div>
-        </div>
-      </div>
-      <p style="font-size:0.85em;color:var(--text-muted);margin-top:12px">
-        2026-08-16 이후 방문 고객으로, 30일 관찰 기간이 아직 진행 중입니다.
-        이 고객들의 최종 전환율은 향후 데이터 업데이트 시 확정됩니다.
-      </p>
-    `;
-    container.appendChild(div);
+  function execRenderComposition(gc) {
+    const total = gc.attributedRevenue;
+    execRanked(
+      document.getElementById("execMarket"),
+      (gc.nationalityRevenue || [])
+        .map((n) => ({ name: n.country, revenue: n.revenue, paidCustomers: n.paidCustomers }))
+        .sort((a, b) => b.revenue - a.revenue),
+      total
+    );
+    execRanked(
+      document.getElementById("execChannel"),
+      (gc.channelRevenue || [])
+        .map((c) => ({ name: c.channel, revenue: c.revenue, paidCustomers: c.paidCustomers }))
+        .sort((a, b) => b.revenue - a.revenue),
+      total
+    );
   }
 
-  function renderGreaterChinaMethodology() {
-    const container = document.getElementById("greaterChinaMethodology");
-    clear(container);
+  function execRenderQuality(gc) {
+    const el = document.getElementById("execQuality");
+    clear(el);
+    const r = gc._reconciliation || {};
+    const total = r.totalApprovedRevenue || 0;
+    const parts = [
+      { k: "Mature Attributed", v: r.matureAttributedRevenue || 0, seg: 1 },
+      { k: "Open Attributed", v: r.openAttributedRevenue || 0, seg: 2 },
+      { k: "Unattributed", v: r.unattributedRevenue || 0, seg: 3 },
+    ];
 
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <strong>범위:</strong> 중국, 대만, 홍콩, 마카오<br/>
-      <strong>방문:</strong> 예약상태 = "귀가" 또는 "내원"인 고객<br/>
-      <strong>결제:</strong> 결제상태 = "승인"인 기록만 포함<br/>
-      <strong>귀인 윈도우:</strong> 방문일로부터 이후 0~30일 내 발생한 결제<br/>
-      <strong>다중 방문:</strong> 결제는 결제일 이전 가장 가까운 qualifying 방문에 귀인<br/>
-      <strong>성숙 코호트:</strong> 방문일 ≤ 2026-08-15 (30일 관찰 기간 완료)<br/>
-      <strong>PII:</strong> 개인정보 미포함 (집계 지표만 표시)<br/>
-    `;
-    container.appendChild(div);
+    el.innerHTML =
+      '<div class="exec-q-figure">' +
+        '<div class="exec-q-value">' + execPct(gc.attributionCoverage) + "</div>" +
+        '<div class="exec-q-label">Payment Attribution Success</div>' +
+        '<p class="exec-q-note">' + execNum(gc.attributedPayments) + " of " +
+          execNum(gc.totalApprovedPayments) +
+          " approved payment records matched to a qualifying visit. " +
+          "This measures record coverage, not revenue share.</p>" +
+      "</div>" +
+      "<div>" +
+        '<div class="exec-recon-head">' +
+          '<span class="exec-recon-k">Revenue Reconciliation</span>' +
+          '<span class="exec-recon-total">' + execKRW(total) + "</span>" +
+        "</div>" +
+        '<div class="exec-recon-bar">' +
+          parts.map((p) =>
+            '<div class="exec-seg-' + p.seg + '" style="width:' +
+            (p.v / total * 100).toFixed(3) + '%"></div>').join("") +
+        "</div>" +
+        '<div class="exec-recon-legend">' +
+          parts.map((p) =>
+            "<div>" +
+              '<div class="exec-leg-k"><span class="exec-dot exec-seg-' + p.seg + '"></span>' + p.k + "</div>" +
+              '<div class="exec-leg-v">' + execKRW(p.v) + "</div>" +
+              '<div class="exec-leg-s">' + (p.v / total * 100).toFixed(1) + "% of total approved</div>" +
+            "</div>").join("") +
+        "</div>" +
+        '<div class="exec-cohort">' +
+          '<div><div class="exec-co-k">Open Cohort Visits</div><div class="exec-co-v">' +
+            execNum(gc.openVisitCustomers) + "</div></div>" +
+          '<div><div class="exec-co-k">Open Cohort Paid</div><div class="exec-co-v">' +
+            execNum(gc.openPaidCustomers) + "</div></div>" +
+          '<div><div class="exec-co-k">Unattributed Payments</div><div class="exec-co-v">' +
+            execNum(gc.unattributedPayments) + "</div></div>" +
+        "</div>" +
+      "</div>";
+  }
+
+  function execRenderMethod() {
+    const el = document.getElementById("execMethod");
+    clear(el);
+    const rules = [
+      ["01", "30-Day Window", "Payment is attributed within a defined post-visit window."],
+      ["02", "Last Qualifying Visit", "Each payment maps to the most recent qualifying prior visit."],
+      ["03", "Mature / Open Cohort", "Incomplete observation windows are separated to avoid distorted conversion."],
+      ["04", "PII-Safe Design", "Public portfolio demo contains Synthetic Data only."],
+    ];
+    el.innerHTML = rules.map((r) =>
+      '<div class="exec-rule">' +
+        '<div class="exec-rule-n">' + r[0] + "</div>" +
+        '<div class="exec-rule-t">' + r[1] + "</div>" +
+        '<div class="exec-rule-d">' + r[2] + "</div>" +
+      "</div>").join("");
+
+    const stale = el.parentNode.querySelector(".exec-foot");
+    if (stale) stale.remove();
+
+    const foot = document.createElement("p");
+    foot.className = "exec-foot";
+    foot.textContent =
+      "내원 → 결제 → 수익까지 연결하는 Revenue Attribution 분석입니다. " +
+      "실제 업무에서 설계한 분석 구조를 Synthetic Data로 재구성한 Portfolio Demo이며, " +
+      "표시된 수치는 실제 회사 운영 실적을 나타내지 않습니다.";
+    el.parentNode.appendChild(foot);
   }
