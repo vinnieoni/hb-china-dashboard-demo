@@ -1046,8 +1046,8 @@ main().catch((err) => {
     const foot = document.createElement("p");
     foot.className = "exec-foot";
     foot.textContent =
-      "KOS 예약·내원·결제 데이터를 연계해 수익까지 연결하는 30일 Revenue Attribution 분석입니다. " +
-      "실제 업무에서 설계한 분석 구조를 Synthetic Data로 재구성한 Portfolio Demo이며, " +
+      "실제 업무에서는 KOS 예약·내원·결제 데이터를 연계해 30일 Revenue Attribution 구조를 구축했으며, " +
+      "본 데모는 동일한 분석 구조를 Synthetic Data로 재구성했습니다. " +
       "표시된 수치는 실제 회사 운영 실적을 나타내지 않습니다.";
     el.parentNode.appendChild(foot);
   }
